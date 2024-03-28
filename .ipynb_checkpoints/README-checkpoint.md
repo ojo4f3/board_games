@@ -1,0 +1,23 @@
+Data source
+1. item
+   1. rankinfo
+      1. [0]['rank']
+   2. stats
+      1. ['average']
+      2. ['avgweight']
+   3. id
+   4. canonical_link
+   5. name
+   6. yearpublished
+   7. minplayers
+   8. maxplayers
+   9. minplaytime
+   10. maxplaytime
+   11. minage
+   12. short_description
+   13. links
+       1. ['boardgamedesigner'] - loop through ['name'] for all the below
+       2. ['boardgameartist']
+       3. ['boardgamecategory']
+       4. ['boardgamemechanic']
+       5. ['boardgamefamily']

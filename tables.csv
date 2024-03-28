@@ -1,0 +1,28 @@
+Boardgames,,,,Categories (boardgamecategory),,,,Junction Tables
+NAME,DTYPE,,,NAME,DTYPE,,,Boardgames / Designers
+id,INT,PK,,id,INT,"PK, auto",,Boardgames / Artists
+name,VARCHAR(150),,,name,VARCHAR(50),,,Boardgames / Categories
+expansion,BOOL,,,,,,,Boardgames / Mechanics
+yearpublished,INT,,,,,,,Boardgames / Families
+rank,INT,,,Mechanics (boardgamemechanic),,,,
+average,FLOAT,,,NAME,DTYPE,,,
+avgweight,FLOAT,,,id,INT,"PK, auto",,
+minplayers,INT,,,name,VARCHAR(50),,,
+maxplayers,INT,,,,,,,
+minplaytime,INT,,,,,,,
+maxplaytime,INT,,,Families (boardgamefamily),,,,
+minage,INT,,,NAME,DTYPE,,,
+short_description,VARCHAR(1000),,,id,INT,"PK, auto",,
+canonical_link,VARCHAR(50),,,name,VARCHAR(50),,,
+,,,,,,,,
+,,,,,,,,
+Designers (boardgamedesigner),,,,,,,,
+NAME,DTYPE,,,,,,,
+id,INT,"PK, auto",,,,,,
+name,VARCHAR(50),,,,,,,
+,,,,,,,,
+,,,,,,,,
+Artists (boardgameartist),,,,,,,,
+NAME,DTYPE,,,,,,,
+id,INT,"PK, auto",,,,,,
+name,VARCHAR(50),,,,,,,
