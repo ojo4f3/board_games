@@ -3,7 +3,7 @@ from sqlite3 import Connection, Cursor
 table_creation_commands = [
     '''CREATE TABLE IF NOT EXISTS BoardGames (
             id INTEGER PRIMARY KEY,
-            name VARCHAR(150),
+            name VARCHAR(150) UNIQUE,
             expands INTEGER,
             yearpublished INTEGER,
             rank INTEGER,
@@ -19,51 +19,56 @@ table_creation_commands = [
         );''',
     '''CREATE TABLE IF NOT EXISTS Designers (
             id INTEGER PRIMARY KEY,
-            name VARCHAR(50)
+            name VARCHAR(50) UNIQUE
         );''',
     '''CREATE TABLE IF NOT EXISTS Artists (
             id INTEGER PRIMARY KEY,
-            name VARCHAR(50)
+            name VARCHAR(50) UNIQUE
         );''',
     '''CREATE TABLE IF NOT EXISTS Categories (
             id INTEGER PRIMARY KEY,
-            name VARCHAR(50)
+            name VARCHAR(50) UNIQUE
         );''',
     '''CREATE TABLE IF NOT EXISTS Mechanics (
             id INTEGER PRIMARY KEY,
-            name VARCHAR(50)
+            name VARCHAR(50) UNIQUE
         );''',
     '''CREATE TABLE IF NOT EXISTS Families (
             id INTEGER PRIMARY KEY,
-            name VARCHAR(50)
+            name VARCHAR(50) UNIQUE
         );''',
     '''CREATE TABLE IF NOT EXISTS BoardGamesDesigners (
             game_id INTEGER,
             designer_id INTEGER,
+            PRIMARY KEY (game_id, designer_id),
             FOREIGN KEY (game_id) REFERENCES BoardGames(id),
             FOREIGN KEY (designer_id) REFERENCES Designers(id)
         );''',
     '''CREATE TABLE IF NOT EXISTS BoardGamesArtists (
             game_id INTEGER,
             artist_id INTEGER,
+            PRIMARY KEY (game_id, artist_id),
             FOREIGN KEY (game_id) REFERENCES BoardGames(id),
             FOREIGN KEY (artist_id) REFERENCES Artists(id)
         );''',
     '''CREATE TABLE IF NOT EXISTS BoardGamesCategories (
             game_id INTEGER,
             category_id INTEGER,
+            PRIMARY KEY (game_id, category_id),
             FOREIGN KEY (game_id) REFERENCES BoardGames(id),
             FOREIGN KEY (category_id) REFERENCES Categories(id)
         );''',
     '''CREATE TABLE IF NOT EXISTS BoardGamesMechanics (
             game_id INTEGER,
             mechanic_id INTEGER,
+            PRIMARY KEY (game_id, mechanic_id),
             FOREIGN KEY (game_id) REFERENCES BoardGames(id),
             FOREIGN KEY (mechanic_id) REFERENCES Mechanics(id)
         );''',
     '''CREATE TABLE IF NOT EXISTS BoardGamesFamilies (
             game_id INTEGER,
             family_id INTEGER,
+            PRIMARY KEY (game_id, family_id),
             FOREIGN KEY (game_id) REFERENCES BoardGames(id),
             FOREIGN KEY (family_id) REFERENCES Families(id)
         );'''
@@ -81,7 +86,7 @@ def store_data(game_data: list, game_attributes: list, conn: Connection, cursor:
 
     """
     # Add the board game into BoardGames
-    insert_statement = f'''INSERT OR REPLACE INTO BoardGames (
+    insert_statement = f'''INSERT OR IGNORE INTO BoardGames (
     id, name, expands, yearpublished, rank, average, avgweight, minplayers, maxplayers, minplaytime, maxplaytime, 
     minage, short_description, canonical_link
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'''
@@ -102,4 +107,14 @@ def add_and_link_attributes(game_id: int, category: int, attributes: list, curso
         cursor.execute(f"INSERT OR IGNORE INTO {table_dict[category]} (name) VALUES (?)", (attribute,))
         cursor.execute(f"SELECT id FROM {table_dict[category]} WHERE name = (?)", (attribute,))
         attr_id = cursor.fetchone()[0]
-        cursor.execute(f"INSERT INTO BoardGames{table_dict[category]} (game_id, {id_dict[category]}) VALUES (?, ?)", (game_id, attr_id))
+        cursor.execute(f"INSERT OR IGNORE INTO BoardGames{table_dict[category]} (game_id, {id_dict[category]}) VALUES (?, ?)", (game_id, attr_id))
+
+
+thing = '''SELECT Artists.name, BoardGames.name
+    FROM Artists 
+    INNER JOIN BoardGamesArtists
+    ON Artists.id = BoardGamesArtists.artist_id
+    INNER JOIN BoardGames
+    ON BoardGamesArtists.game_id = BoardGames.id
+    WHERE Artists.name = 'Mihajlo Dimitrievski'
+    ORDER BY BoardGames.name;'''
